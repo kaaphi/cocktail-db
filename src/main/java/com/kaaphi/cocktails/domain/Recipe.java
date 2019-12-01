@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class Recipe implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -152,5 +153,29 @@ public class Recipe implements Serializable {
     public String toString() {
     	return name;
     }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(elements, indexElements, instructions, name, note, reference,
+          referenceDetail, tags);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (!(obj instanceof Recipe)) {
+        return false;
+      }
+      Recipe other = (Recipe) obj;
+      return Objects.equals(elements, other.elements) && indexElements == other.indexElements
+          && Objects.equals(instructions, other.instructions) && Objects.equals(name, other.name)
+          && Objects.equals(note, other.note) && Objects.equals(reference, other.reference)
+          && Objects.equals(referenceDetail, other.referenceDetail)
+          && Objects.equals(tags, other.tags);
+    }
+    
+    
 
 }

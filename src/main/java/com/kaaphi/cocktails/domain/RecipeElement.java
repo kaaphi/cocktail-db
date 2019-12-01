@@ -1,7 +1,8 @@
 package com.kaaphi.cocktails.domain;
 
 import java.io.Serializable;
-
+import java.util.Arrays;
+import java.util.Objects;
 import com.kaaphi.cocktails.util.Fractions;
 
 
@@ -79,6 +80,29 @@ public class RecipeElement implements Serializable {
 	public String toString() {
 		return String.format("%s %s %s (%b)", Fractions.toString(amount), unit, ingredient, isBase);
 	}
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + Arrays.hashCode(amount);
+    result = prime * result + Objects.hash(ingredient, isBase, note, recipe, unit);
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!(obj instanceof RecipeElement)) {
+      return false;
+    }
+    RecipeElement other = (RecipeElement) obj;
+    return Arrays.equals(amount, other.amount) && Objects.equals(ingredient, other.ingredient)
+        && isBase == other.isBase && Objects.equals(note, other.note)
+        && Objects.equals(recipe, other.recipe) && Objects.equals(unit, other.unit);
+  }
 
     
 }

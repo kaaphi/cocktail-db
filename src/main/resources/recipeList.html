@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  #head ( "Cocktail Compendium" )
+  <body>
+  #scripts
+  <div class="container">
+  <h1>$title</h1>
+  <ul class="list-group">
+   	#foreach( $recipe in $recipes )
+    <li class="list-group-item"><a href="/r/$recipe.UriTitle">$recipe.Recipe.Name</a></li>
+	#end
+  </ul>
+  </div>
+  </body>
+</html>
