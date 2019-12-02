@@ -19,23 +19,23 @@ public class VelocitySLF4JLogChute implements LogChute {
       case LogChute.TRACE_ID:
         log.trace(message);
         break;
-        
+
       case LogChute.DEBUG_ID:
         log.debug(message);
         break;
-        
+
       case LogChute.INFO_ID:
         log.info(message);
         break;
-        
+
       case LogChute.WARN_ID:
         log.warn(message);
         break;
-        
+
       case LogChute.ERROR_ID:
         log.error(message);
         break;
-        
+
       default:
         log.error("Unknown level: %d", level);
         log.error(message);
@@ -48,23 +48,23 @@ public class VelocitySLF4JLogChute implements LogChute {
       case LogChute.TRACE_ID:
         log.trace(message, t);
         break;
-        
+
       case LogChute.DEBUG_ID:
         log.debug(message, t);
         break;
-        
+
       case LogChute.INFO_ID:
         log.info(message, t);
         break;
-        
+
       case LogChute.WARN_ID:
         log.warn(message, t);
         break;
-        
+
       case LogChute.ERROR_ID:
         log.error(message, t);
         break;
-        
+
       default:
         log.error("Unknown level: %d", level);
         log.error(message, t);

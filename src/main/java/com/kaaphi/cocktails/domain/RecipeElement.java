@@ -1,85 +1,86 @@
 package com.kaaphi.cocktails.domain;
 
+import com.kaaphi.cocktails.util.Fractions;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
-import com.kaaphi.cocktails.util.Fractions;
 
 
 public class RecipeElement implements Serializable {
-	private static final long serialVersionUID = 1L;
-	
-    private String ingredient;
-    private int[] amount;
-    private Recipe recipe;
-    private String note;
-    private String unit;
-    private boolean isBase;
+  private static final long serialVersionUID = 1L;
 
-    public RecipeElement(String ingredient, int[] amount, String unit, String note, boolean isBase, Recipe recipe) {
-        this.ingredient = ingredient;
-        this.amount = amount;
-        this.note = note;
-        this.recipe = recipe;
-        this.unit = unit;
-        this.isBase = isBase;
-    }
-    
-    public RecipeElement(Recipe recipe) {
-        this("", new int[]{0,0}, "oz", "", false, recipe);
-    }
+  private String ingredient;
+  private int[] amount;
+  private Recipe recipe;
+  private String note;
+  private String unit;
+  private boolean isBase;
 
-	public String getIngredient() {
-		return ingredient;
-	}
+  public RecipeElement(String ingredient, int[] amount, String unit, String note, boolean isBase, Recipe recipe) {
+    this.ingredient = ingredient;
+    this.amount = amount;
+    this.note = note;
+    this.recipe = recipe;
+    this.unit = unit;
+    this.isBase = isBase;
+  }
 
-	public void setIngredient(String ingredient) {
-		this.ingredient = ingredient;
-	}
+  public RecipeElement(Recipe recipe) {
+    this("", new int[]{0,0}, "oz", "", false, recipe);
+  }
 
-	public int[] getAmount() {
-		return amount;
-	}
+  public String getIngredient() {
+    return ingredient;
+  }
 
-	public void setAmount(int[] amount) {
-		this.amount = amount;
-	}
-	
-	public boolean isBase() {
-		return isBase;
-	}
-	
-	public void setIsBase(boolean isBase) {
-		this.isBase = isBase;
-	}
-	
-	public String getUnit() {
-		return unit;
-	}
-	
-	public void setUnit(String unit) {
-		this.unit = unit;
-	}
+  public void setIngredient(String ingredient) {
+    this.ingredient = ingredient;
+  }
 
-	public Recipe getRecipe() {
-		return recipe;
-	}
+  public int[] getAmount() {
+    return amount;
+  }
 
-	public void setRecipe(Recipe recipe) {
-		this.recipe = recipe;
-	}
+  public void setAmount(int[] amount) {
+    this.amount = amount;
+  }
 
-	public String getNote() {
-		return note;
-	}
+  public boolean isBase() {
+    return isBase;
+  }
 
-	public void setNote(String note) {
-		this.note = note;
-	}
-	
-	public String toString() {
-		return String.format("%s %s %s (%b)", Fractions.toString(amount), unit, ingredient, isBase);
-	}
+  public void setIsBase(boolean isBase) {
+    this.isBase = isBase;
+  }
+
+  public String getUnit() {
+    return unit;
+  }
+
+  public void setUnit(String unit) {
+    this.unit = unit;
+  }
+
+  public Recipe getRecipe() {
+    return recipe;
+  }
+
+  public void setRecipe(Recipe recipe) {
+    this.recipe = recipe;
+  }
+
+  public String getNote() {
+    return note;
+  }
+
+  public void setNote(String note) {
+    this.note = note;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("%s %s %s (%b)", Fractions.toString(amount), unit, ingredient, isBase);
+  }
 
   @Override
   public int hashCode() {
@@ -104,5 +105,5 @@ public class RecipeElement implements Serializable {
         && Objects.equals(recipe, other.recipe) && Objects.equals(unit, other.unit);
   }
 
-    
+
 }

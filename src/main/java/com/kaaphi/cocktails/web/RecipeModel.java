@@ -1,21 +1,21 @@
 package com.kaaphi.cocktails.web;
 
-import java.util.Objects;
 import com.kaaphi.cocktails.domain.Recipe;
+import java.util.Objects;
 
 public class RecipeModel implements Comparable<RecipeModel> {
   private final String uriTitle;
   private final Recipe recipe;
-  
+
   public RecipeModel(String uriTitle, Recipe recipe) {
     this.uriTitle = uriTitle;
     this.recipe = recipe;
   }
-  
+
   public String getUriTitle() {
     return uriTitle;
   }
-  
+
   public Recipe getRecipe() {
     return recipe;
   }

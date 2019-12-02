@@ -1,10 +1,5 @@
 package com.kaaphi.cocktails.web;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Paths;
-import java.util.Properties;
-import org.apache.velocity.app.VelocityEngine;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
@@ -14,18 +9,23 @@ import com.kaaphi.cocktails.dao.RecipeDao;
 import io.javalin.Javalin;
 import io.javalin.plugin.rendering.JavalinRenderer;
 import io.javalin.plugin.rendering.template.JavalinVelocity;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.Properties;
+import org.apache.velocity.app.VelocityEngine;
 
 public class CocktailAppModule extends AbstractModule {
   @Override
   protected void configure() {
     Names.bindProperties(binder(), loadProperties("config.properties"));
-    
+
     bindConstant()
     .annotatedWith(Names.named("port"))
     .to(7000);
-    
+
   }
-  
+
   static Properties loadProperties(String resource) {
     try(InputStream in = CocktailAppModule.class.getClassLoader().getResourceAsStream(resource)) {
       Properties props = new Properties();
@@ -37,7 +37,7 @@ public class CocktailAppModule extends AbstractModule {
       throw new Error(e);
     }
   }
-  
+
   @Provides
   RecipeDao provideRecipeDao(@Named("recipe.data.path") String dataPath) {
     return new CustomFormatRecipeDao(Paths.get(dataPath).toFile());

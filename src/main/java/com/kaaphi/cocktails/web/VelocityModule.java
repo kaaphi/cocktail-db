@@ -1,8 +1,8 @@
 package com.kaaphi.cocktails.web;
 
-import org.apache.velocity.app.VelocityEngine;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import org.apache.velocity.app.VelocityEngine;
 
 public class VelocityModule extends AbstractModule {
   @Provides
@@ -12,7 +12,7 @@ public class VelocityModule extends AbstractModule {
     configureVelocityEngine(velocityEngine);    
     return velocityEngine;
   }
-  
+
   protected void configureVelocityEngine(VelocityEngine velocityEngine) {
     velocityEngine.setProperty("resource.loader", "class");
     velocityEngine.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
