@@ -1,7 +1,9 @@
 package com.kaaphi.cocktails.web;
 
 import static io.javalin.apibuilder.ApiBuilder.get;
+import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.name.Named;
 import io.javalin.Javalin;
 import org.slf4j.Logger;
@@ -34,5 +36,13 @@ public class CocktailApp {
   }
 
   public static void main(String[] args) {
+    Injector injector = Guice.createInjector(
+        new CocktailAppModule(),
+        new VelocityModule()
+        );
+    
+    CocktailApp app = injector.getInstance(CocktailApp.class);
+    
+    app.start();
   }
 }

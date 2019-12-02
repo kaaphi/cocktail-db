@@ -6,9 +6,13 @@ buildscript {
 
 
 apply plugin: 'java'
-apply plugin: 'distribution'
+apply plugin: 'application'
 
 version = '1.0'
+
+mainClassName = "com.kaaphi.cocktails.web.CocktailApp"
+
+applicationDefaultJvmArgs = ["-DconfigPath=/"]
 
 repositories {
     jcenter()
