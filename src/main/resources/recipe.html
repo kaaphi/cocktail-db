@@ -3,9 +3,23 @@
   #head ( "Cocktail Compendium - $recipe.Recipe.Name" )
   <body>
   #scripts
+  #navbar
   <div class="container">
   <h1>$recipe.Recipe.Name</h1>
+  <table class="table table-borderless table-sm">
+  <tbody>
+    #foreach( $em in $recipe.Elements )
+      <tr>
+        <td class="fit">$em.Amount $em.Element.Unit</td>
+        <td>$em.Element.Ingredient#if ($em.hasNote()) <small><i>($em.Element.Note)</i></small>#end</td>
+      </tr>
+    #end
+  </tbody>
+  </table>
   <p>$recipe.Recipe.Instructions</p>
+  #if ( $recipe.hasNote() )
+  <p><span class="initialism font-weight-bold">NOTE:</span> $recipe.Recipe.Note</p>
+  #end
   </div>
   </body>
 </html>

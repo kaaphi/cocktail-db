@@ -1,7 +1,9 @@
 package com.kaaphi.cocktails.web;
 
 import com.kaaphi.cocktails.domain.Recipe;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class RecipeModel implements Comparable<RecipeModel> {
   private final String uriTitle;
@@ -18,6 +20,16 @@ public class RecipeModel implements Comparable<RecipeModel> {
 
   public Recipe getRecipe() {
     return recipe;
+  }
+  
+  public boolean hasNote() {
+    return !(recipe.getNote() == null || recipe.getNote().trim().isEmpty());
+  }
+  
+  public List<RecipeElementModel> getElements() {
+    return recipe.getRecipeElements().stream()
+        .map(RecipeElementModel::new)
+        .collect(Collectors.toList());
   }
 
   @Override
