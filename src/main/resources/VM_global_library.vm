@@ -35,10 +35,10 @@
         <a class="nav-link" href="/alphabetical">Alphabetical</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Base Ingredients</a>
+        <a class="nav-link" href="/baseIngredients">Base Ingredients</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">All Ingredients</a>
+        <a class="nav-link" href="/allIngredients">All Ingredients</a>
       </li>
     </ul>
   </div>

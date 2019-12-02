@@ -21,6 +21,8 @@ public class CocktailApp {
     app.routes(() -> {
       get("/", controller.render("index.html"));
       get("alphabetical", controller::renderAlphabeticalIndex);
+      get("baseIngredients", controller::renderByBaseIngredients);
+      get("allIngredients", controller::renderByAllIngredients);
 
       get("/r/:id", controller::renderRecipe);
     });

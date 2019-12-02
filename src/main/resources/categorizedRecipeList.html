@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  #head ( "Cocktail Compendium" )
+  <body>
+  #scripts
+  #navbar
+  <div class="container">
+  <div>
+  <h1>$title</h1>
+  <ul class="list-group">
+  #foreach ( $category in $categories )
+    <li class="list-group-item"><a href="#$category.Anchor">$category.Name</a></li>
+  #end
+  </ul>
+  </div>
+  
+  #foreach ( $category in $categories )
+    <div class="mt-4">
+    <h3><a id="$category.Anchor" />$category.Name</h3>
+    <ul class="list-group">
+     #foreach( $recipe in $categoryMap.get($category) )
+       <li class="list-group-item"><a href="/r/$recipe.UriTitle">$recipe.Recipe.Name</a></li>
+     #end
+    </ul>
+    <small><a href="#">to top</a></small>
+    </div>
+  #end
+  </div>
+  </body>
+</html>

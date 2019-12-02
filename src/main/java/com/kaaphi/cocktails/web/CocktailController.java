@@ -2,12 +2,17 @@ package com.kaaphi.cocktails.web;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
+import com.kaaphi.cocktails.domain.Recipe;
+import com.kaaphi.cocktails.domain.RecipeElement;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CocktailController {
   private final RecipeData data;
@@ -31,9 +36,29 @@ public class CocktailController {
   public void renderAlphabeticalIndex(Context ctx) {
     renderRecipeList(ctx, new RecipeListModel("Alphabetical", data.getRecipes(__ -> true)));
   }
+  
+  public void renderByBaseIngredients(Context ctx) {
+    renderCategorizedRecipes(ctx, "Base Ingredients", r -> r.getBaseSpirits().stream().map(RecipeElement::getIngredient));
+  }
+  
+  public void renderByAllIngredients(Context ctx) {
+    renderCategorizedRecipes(ctx, "All Ingredients", r -> r.getIndexElements() ? 
+        r.getRecipeElements().stream().map(RecipeElement::getIngredient)
+        : Stream.empty());
+  }
 
   private void renderRecipeList(Context ctx, Map<String, ?> model) {
     ctx.render("recipeList.html", model);
+  }
+  
+  private void renderCategorizedRecipes(Context ctx, String title, Function<Recipe, Stream<String>> classifier) {
+    Map<CategoryModel, List<RecipeModel>> categorized = data.getRecipesByCategory(classifier);
+    
+    ctx.render("categorizedRecipeList.html", model(b -> b
+        .put("title", title)
+        .put("categories", categorized.keySet().stream().sorted().collect(Collectors.toList()))
+        .put("categoryMap", categorized)
+        ));
   }
 
   private static Map<String, Object> model(Consumer<ImmutableMap.Builder<String, Object>> consumer) {
