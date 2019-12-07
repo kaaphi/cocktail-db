@@ -25,6 +25,7 @@ public class CocktailApp {
       get("alphabetical", controller::renderAlphabeticalIndex);
       get("baseIngredients", controller::renderByBaseIngredients);
       get("allIngredients", controller::renderByAllIngredients);
+      get("search", controller::renderSearch);
 
       get("/r/:id", controller::renderRecipe);
     });

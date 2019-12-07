@@ -3,6 +3,7 @@ package com.kaaphi.cocktails.web;
 import com.google.inject.Inject;
 import com.kaaphi.cocktails.dao.RecipeDao;
 import com.kaaphi.cocktails.domain.Recipe;
+import com.kaaphi.cocktails.domain.RecipeElement;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,6 +62,15 @@ public class RecipeData {
         .filter(rm -> filter.test(rm.getRecipe()))
         .sorted()
         .collect(Collectors.toList());
+  }
+  
+  public static Predicate<Recipe> getSearchPredicate(String searchString) {
+    final String containString = searchString.toLowerCase();
+    return r -> r.getName().toLowerCase().contains(containString)
+        || r.getRecipeElements().stream()
+          .map(RecipeElement::getIngredient)
+          .map(String::toLowerCase)
+          .anyMatch(s -> s.contains(containString));
   }
 
   private static final String generateUriName(String title) {

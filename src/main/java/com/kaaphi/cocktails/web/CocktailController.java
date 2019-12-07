@@ -38,6 +38,12 @@ public class CocktailController {
     renderRecipeList(ctx, new RecipeListModel("Alphabetical", data.getRecipes(Predicate.not(Recipe::isArchived))));
   }
   
+  public void renderSearch(Context ctx) {
+    String searchString = ctx.queryParam("q");
+    renderRecipeList(ctx, new RecipeListModel(String.format("\u201C%s\u201D", searchString), 
+        data.getRecipes(RecipeData.getSearchPredicate(searchString))));
+  }
+  
   public void renderByBaseIngredients(Context ctx) {
     renderCategorizedRecipes(ctx, "Base Ingredients", r -> r.getBaseSpirits().stream().map(RecipeElement::getIngredient));
   }

@@ -2,3 +2,20 @@ td.fit {
   white-space: nowrap;
   width: 1%;
 }
+
+.brand {
+  font-family: 'Source Serif Pro', serif;
+  font-size: 1.8em;
+}
+
+h1 {
+  font-family: 'Source Serif Pro', serif;
+}
+
+h2 {
+  font-family: 'Source Serif Pro', serif;
+}
+
+h3 {
+  font-family: 'Source Serif Pro', serif;
+}
