@@ -11,7 +11,7 @@ import javax.swing.event.EventListenerList;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-public class SortedListModel<T> implements ListModel, Iterable<T> {
+public class SortedListModel<T> implements ListModel<T>, Iterable<T> {
   private EventListenerList listenerList;
   private List<T> objects;
   private Comparator<? super T> comparator;
@@ -28,7 +28,7 @@ public class SortedListModel<T> implements ListModel, Iterable<T> {
   }
 
   @Override
-  public Object getElementAt(int i) {
+  public T getElementAt(int i) {
     return objects.get(i);
   }
 

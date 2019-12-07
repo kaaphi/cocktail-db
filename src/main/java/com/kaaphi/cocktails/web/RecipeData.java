@@ -3,7 +3,6 @@ package com.kaaphi.cocktails.web;
 import com.google.inject.Inject;
 import com.kaaphi.cocktails.dao.RecipeDao;
 import com.kaaphi.cocktails.domain.Recipe;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,7 +36,7 @@ public class RecipeData {
     return Optional.ofNullable(recipes.get(uriTitle));
   }
   
-  public Map<CategoryModel, List<RecipeModel>> getRecipesByCategory(Function<Recipe, Stream<String>> categorizer) {
+  public Map<CategoryModel, List<RecipeModel>> getRecipesByCategory(Predicate<Recipe> filter, Function<Recipe, Stream<String>> categorizer) {
     Map<CategoryModel, List<RecipeModel>> categorized = new HashMap<CategoryModel, List<RecipeModel>>();
     
     Function<RecipeModel, Stream<CategoryModel>> classifier = categorizer
@@ -46,6 +45,7 @@ public class RecipeData {
         
     
     recipes.values().stream()
+    .filter(rm -> filter.test(rm.getRecipe()))
     .sorted()
     .forEach(rm -> {
       classifier.apply(rm).forEach(c -> {

@@ -19,10 +19,11 @@ public class Recipe implements Serializable {
   private boolean indexElements;
   private List<RecipeElement> elements;
   private List<String> tags;
+  private boolean archived;
 
 
 
-  public Recipe(String name, String instructions, String reference,String referenceDetail, String note, List<String> tags, boolean indexElements) {
+  public Recipe(String name, String instructions, String reference,String referenceDetail, String note, List<String> tags, boolean indexElements, boolean archived) {
     this.name = name;
     this.instructions = instructions;
     this.reference = reference;
@@ -31,10 +32,11 @@ public class Recipe implements Serializable {
     this.tags = tags;
     this.elements = new LinkedList<RecipeElement>();
     this.indexElements = indexElements;
+    this.archived = archived;
   }
 
   public Recipe(String name) {
-    this(name, "", "", "", "", new ArrayList<String>(), true);
+    this(name, "", "", "", "", new ArrayList<String>(), true, false);
   }
 
   public List<RecipeElement> getBaseSpirits() {
@@ -148,6 +150,14 @@ public class Recipe implements Serializable {
 
   public List<RecipeElement> getRecipeElements() {
     return elements;
+  }
+  
+  public boolean isArchived() {
+    return archived;
+  }
+
+  public void setArchived(boolean archived) {
+    this.archived = archived;
   }
 
   @Override

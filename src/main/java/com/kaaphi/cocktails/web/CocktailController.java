@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -34,7 +35,7 @@ public class CocktailController {
   }
 
   public void renderAlphabeticalIndex(Context ctx) {
-    renderRecipeList(ctx, new RecipeListModel("Alphabetical", data.getRecipes(__ -> true)));
+    renderRecipeList(ctx, new RecipeListModel("Alphabetical", data.getRecipes(Predicate.not(Recipe::isArchived))));
   }
   
   public void renderByBaseIngredients(Context ctx) {
@@ -52,7 +53,7 @@ public class CocktailController {
   }
   
   private void renderCategorizedRecipes(Context ctx, String title, Function<Recipe, Stream<String>> classifier) {
-    Map<CategoryModel, List<RecipeModel>> categorized = data.getRecipesByCategory(classifier);
+    Map<CategoryModel, List<RecipeModel>> categorized = data.getRecipesByCategory(Predicate.not(Recipe::isArchived), classifier);
     
     ctx.render("categorizedRecipeList.html", model(b -> b
         .put("title", title)

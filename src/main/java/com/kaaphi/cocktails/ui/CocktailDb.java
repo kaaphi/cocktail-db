@@ -33,25 +33,24 @@ public class CocktailDb extends JSplitPane {
   private SortedListModel<Recipe> cocktailListModel;
   private RecipeEditor editor;
   private RecipeDao dao;
-  private JList cocktailList;
+  private JList<Recipe> cocktailList;
   private CocktailAutoCompleteOptions options = new CocktailAutoCompleteOptions();
+  
+  private static final Comparator<Recipe> RECIPE_ORDER = (a,b) -> {
+    if(a.isArchived() == b.isArchived()) {
+      return a.getName().compareTo(b.getName());
+    } else if (a.isArchived()) {
+      return 1;
+    } else {
+      return -1;
+    }        
+  };
 
   public CocktailDb() {
     super(JSplitPane.HORIZONTAL_SPLIT);
 
-    cocktailListModel = new SortedListModel<Recipe>(new Comparator<Recipe>() {
-      @Override
-      public int compare(Recipe r1, Recipe r2) {
-        int c = r1.getReference().compareToIgnoreCase(r2.getReference());
-        if(c == 0) {
-          c = r1.getReferenceDetail().compareToIgnoreCase(r2.getReferenceDetail());
-        }
-        return c;
-
-        //return r1.getName().compareToIgnoreCase(r2.getName());
-      }
-    });
-    cocktailList = new JList(cocktailListModel);
+    cocktailListModel = new SortedListModel<Recipe>(RECIPE_ORDER);
+    cocktailList = new JList<>(cocktailListModel);
 
 
     JPanel editorPanel = new JPanel(new BorderLayout());

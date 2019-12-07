@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CustomFormatRecipeDao implements RecipeDao {
-  private static final int currentVersion = 6;
+  private static final int currentVersion = 7;
   private static final Loader[] loaders = new Loader[] {
       null, //no 0 version
       new V1Loader(),
@@ -31,6 +31,7 @@ public class CustomFormatRecipeDao implements RecipeDao {
       new V4LoaderUpgrader(),
       new V5LoaderUpgrader(),
       new V6LoaderUpgrader(),
+      new V7LoaderUpgrader()
   };
 
   private static final Upgrader[] upgraders = new Upgrader[] {
@@ -40,6 +41,7 @@ public class CustomFormatRecipeDao implements RecipeDao {
       new V4LoaderUpgrader(),
       new V5LoaderUpgrader(),
       new V6LoaderUpgrader(),
+      new V7LoaderUpgrader()
   };
 
   private File file;
@@ -81,7 +83,7 @@ public class CustomFormatRecipeDao implements RecipeDao {
 
       for(Entry<RecipeData, List<RecipeElementData>> entry : dataMap.entrySet()) {
         RecipeData d = entry.getKey();
-        Recipe r = new Recipe(d.name, d.instructions, d.reference, d.referenceDetails, d.note, new ArrayList<String>(), d.indexElements);
+        Recipe r = new Recipe(d.name, d.instructions, d.reference, d.referenceDetails, d.note, new ArrayList<String>(), d.indexElements, d.isArchived);
         r.setTagsFromString(d.tagString);
         List<RecipeElement> elements = new LinkedList<RecipeElement>();
         for(RecipeElementData e : entry.getValue()) {
@@ -143,7 +145,10 @@ public class CustomFormatRecipeDao implements RecipeDao {
     out.writeInt(r.getRecipeElements().size());
 
     //V6
-    out.writeBoolean(r.getIndexElements());		
+    out.writeBoolean(r.getIndexElements());	
+    
+    //V7
+    out.writeBoolean(r.isArchived());
 
     //elements are always last
     for(RecipeElement e : r.getRecipeElements()) {
@@ -178,6 +183,7 @@ public class CustomFormatRecipeDao implements RecipeDao {
     out.writeBoolean(e.isBase());
 
     //V6
+    //V7
     //no changes
   }
 
@@ -353,6 +359,30 @@ public class CustomFormatRecipeDao implements RecipeDao {
       //nothing
     }
   }
+  
+  private static class V7LoaderUpgrader extends V6LoaderUpgrader implements Loader {
+    @Override
+    public void loadData(RecipeData data, DataInputStream in) throws IOException {
+      super.loadData(data, in); 
+      data.isArchived = in.readBoolean();
+    }
+
+    @Override
+    public void loadData(RecipeElementData data, DataInputStream in) throws IOException {
+      super.loadData(data, in); 
+      //no changes
+    }
+
+    @Override
+    protected void upgrade(RecipeData d) throws Exception {
+      d.isArchived = false;
+    }
+
+    @Override
+    protected void upgrade(RecipeElementData d) throws Exception {
+      //nothing
+    }
+  }
 
   private static class RecipeData {
     String name;
@@ -362,6 +392,7 @@ public class CustomFormatRecipeDao implements RecipeDao {
     String note;
     String tagString;
     boolean indexElements;
+    boolean isArchived;
     int numElements;
 
     @Override

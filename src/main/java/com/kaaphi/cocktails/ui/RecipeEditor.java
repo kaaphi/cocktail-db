@@ -29,6 +29,7 @@ public class RecipeEditor extends JPanel implements ModelViewer {
   private JTextArea note;
   private AutoCompleteJTextField tags;
   private JCheckBox dontIndexElements;
+  private JCheckBox isArchived;
   private RecipeElementsEditor elementsEditor;
   private DirtySupport dirtySupport = new DirtySupport(this);
   private CocktailAutoCompleteOptions options;
@@ -62,6 +63,8 @@ public class RecipeEditor extends JPanel implements ModelViewer {
     tags.getDocument().addDocumentListener(dirtySupport);
     dontIndexElements = new JCheckBox("Don't Index Recipe Elements");
     dontIndexElements.addItemListener(dirtySupport);
+    isArchived = new JCheckBox("Archive");
+    isArchived.addItemListener(dirtySupport);
 
     elementsEditor = new RecipeElementsEditor(options);
     elementsEditor.addDirtyListener(dirtySupport);
@@ -78,6 +81,7 @@ public class RecipeEditor extends JPanel implements ModelViewer {
     additional.add(new JScrollPane(note));
     additional.add(labeledComponent("Tags: ", tags));
     additional.add(dontIndexElements);
+    additional.add(isArchived);
 
     for(Component c : additional.getComponents()) {
       ((JComponent)c).setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -112,6 +116,7 @@ public class RecipeEditor extends JPanel implements ModelViewer {
     note.setText(recipe.getNote());
     tags.setText(recipe.getTagString());
     dontIndexElements.setSelected(!recipe.getIndexElements());
+    isArchived.setSelected(recipe.isArchived());
     elementsEditor.setModel(recipe);
     elementsEditor.modelToView();
     dirtySupport.setSuppressEvents(false);
@@ -127,6 +132,7 @@ public class RecipeEditor extends JPanel implements ModelViewer {
     recipe.setNote(note.getText());
     recipe.setTagsFromString(tags.getText());
     recipe.setIndexElements(!dontIndexElements.isSelected());
+    recipe.setArchived(isArchived.isSelected());
     elementsEditor.viewToModel();
 
     options.references.addOption(recipe.getReference());
