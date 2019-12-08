@@ -26,9 +26,12 @@ public class RecipeElementModel {
     StringBuilder sb = new StringBuilder();
 
     String[] parts = Fractions.toStringParts(a);
+    
     int i = 0;
     //whole number part
-    if(parts.length != 2) {
+    if(parts.length == 0) {
+      return "";
+    } else if(parts.length != 2) {
       sb.append(parts[i++]);
       if(parts.length != 1) {
         sb.append(" ");

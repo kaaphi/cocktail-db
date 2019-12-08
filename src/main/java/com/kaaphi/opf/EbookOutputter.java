@@ -520,6 +520,11 @@ public class EbookOutputter {
 
     String[] parts = Fractions.toStringParts(a);
     int i = 0;
+    if(parts.length == 0) {
+      content.add(new Text(""));
+      return content;
+    }
+    
     if(parts.length != 2) {
       content.add(new Text(parts[i++]));
     }

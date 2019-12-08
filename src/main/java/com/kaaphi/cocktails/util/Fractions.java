@@ -8,6 +8,10 @@ public class Fractions {
   private static final Pattern FRACTION = Pattern.compile("((\\d+)\\s*)?((\\d+)/(\\d+))?");
 
   public static String[] toStringParts(int... f) {
+    if(f[0] == 0) {
+      return new String[0];
+    }
+    
     int wholeNumberPart = f[0]/f[1];
     int remainder = f[0] % f[1];
 
@@ -27,6 +31,10 @@ public class Fractions {
     StringBuilder sb = new StringBuilder();
 
     int i = 0;
+    
+    if(parts.length == 0) {
+      return "";
+    }
 
     if(parts.length != 2) {
       sb.append(parts[i++]);
@@ -45,6 +53,10 @@ public class Fractions {
 
   public static int[] toIntArray(String frac) {
     int[] parts = new int[2];
+    
+    if(frac.trim().isEmpty()) {
+      return parts;
+    }
 
     Matcher m = FRACTION.matcher(frac);
     if(m.matches()) {
