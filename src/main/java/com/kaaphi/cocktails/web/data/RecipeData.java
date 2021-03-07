@@ -1,9 +1,12 @@
-package com.kaaphi.cocktails.web;
+package com.kaaphi.cocktails.web.data;
 
 import com.google.inject.Inject;
 import com.kaaphi.cocktails.dao.RecipeDao;
 import com.kaaphi.cocktails.domain.Recipe;
 import com.kaaphi.cocktails.domain.RecipeElement;
+import com.kaaphi.cocktails.web.CategoryModel;
+import com.kaaphi.cocktails.web.RecipeModel;
+import com.kaaphi.cocktails.web.data.RecipeDataWatcher.RecipeDataWatcherListener;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,14 +16,36 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RecipeData {
+  private static final Logger log = LoggerFactory.getLogger(RecipeData.class);
+
   private final Map<String, RecipeModel> recipes;
+  private final RecipeDao dao;
 
   @Inject
-  public RecipeData(RecipeDao dao) throws Exception {
-    List<Recipe> rawRecipes = dao.load();
+  public RecipeData(RecipeDao dao, RecipeDataWatcher watcher) throws Exception {
+    this.dao = dao;
     recipes = new HashMap<>();
+    reloadData();
+
+    watcher.addListener(this::notifiedDataChanged);
+  }
+
+  private void notifiedDataChanged() {
+    try {
+      log.info("Data changed, will reload.");
+      reloadData();
+    } catch (Exception e) {
+      log.error("Failed to reload data!", e);
+    }
+  }
+
+  public void reloadData() throws Exception {
+    List<Recipe> rawRecipes = dao.load();
+    recipes.clear();
 
     for(Recipe r : rawRecipes) {
       String rootUriTitle = generateUriName(r.getName());;

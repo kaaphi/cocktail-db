@@ -6,6 +6,8 @@ import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import com.kaaphi.cocktails.dao.CustomFormatRecipeDao;
 import com.kaaphi.cocktails.dao.RecipeDao;
+import com.kaaphi.cocktails.web.data.DefaultRecipeDataWatcher;
+import com.kaaphi.cocktails.web.data.RecipeDataWatcher;
 import io.javalin.Javalin;
 import io.javalin.plugin.rendering.JavalinRenderer;
 import io.javalin.plugin.rendering.template.JavalinVelocity;
@@ -15,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
+import java.util.concurrent.Executors;
 import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +74,11 @@ public class CocktailAppModule extends AbstractModule {
   @Provides
   RecipeDao provideRecipeDao(@Named("recipe.data.path") String dataPath) {
     return new CustomFormatRecipeDao(Paths.get(dataPath).toFile());
+  }
+
+  @Provides
+  RecipeDataWatcher provideWatcher(@Named("recipe.data.path") String dataPath) throws IOException {
+    return new DefaultRecipeDataWatcher();
   }
 
   @Provides

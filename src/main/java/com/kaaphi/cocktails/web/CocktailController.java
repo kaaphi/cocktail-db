@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.kaaphi.cocktails.domain.Recipe;
 import com.kaaphi.cocktails.domain.RecipeElement;
+import com.kaaphi.cocktails.web.data.RecipeData;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import java.util.HashMap;

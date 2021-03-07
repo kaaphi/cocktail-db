@@ -5,6 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 public interface RecipeDao {
-  public void save(Collection<Recipe> recipes) throws Exception;
-  public List<Recipe> load() throws Exception;
+  void save(Collection<Recipe> recipes) throws Exception;
+  List<Recipe> load() throws Exception;
 }
