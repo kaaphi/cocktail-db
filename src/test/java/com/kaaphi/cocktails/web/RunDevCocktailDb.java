@@ -12,6 +12,7 @@ public class RunDevCocktailDb {
     Injector injector = Guice.createInjector(
         Modules.override(
             new CocktailAppModule(),
+            new MongoRecipeDaoModule(),
             new DevVelocityModule()
             )
         .with(

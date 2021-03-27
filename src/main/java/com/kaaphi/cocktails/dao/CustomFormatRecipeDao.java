@@ -84,10 +84,10 @@ public class CustomFormatRecipeDao implements RecipeDao {
       for(Entry<RecipeData, List<RecipeElementData>> entry : dataMap.entrySet()) {
         RecipeData d = entry.getKey();
         Recipe r = new Recipe(d.name, d.instructions, d.reference, d.referenceDetails, d.note, new ArrayList<String>(), d.indexElements, d.isArchived);
-        r.setTagsFromString(d.tagString);
+        r.setTagString(d.tagString);
         List<RecipeElement> elements = new LinkedList<RecipeElement>();
         for(RecipeElementData e : entry.getValue()) {
-          elements.add(new RecipeElement(e.ingredient, e.amount, e.unit, e.note, e.isBase, r));
+          elements.add(new RecipeElement(e.ingredient, e.amount, e.unit, e.note, e.isBase));
         }
         r.setRecipeElements(elements);
         recipes.add(r);
@@ -180,7 +180,7 @@ public class CustomFormatRecipeDao implements RecipeDao {
     out.writeInt(e.getAmount()[1]);
     out.writeUTF(e.getUnit());
     out.writeUTF(e.getNote());
-    out.writeBoolean(e.isBase());
+    out.writeBoolean(e.getIsBase());
 
     //V6
     //V7

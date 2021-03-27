@@ -49,7 +49,7 @@ public class RecipeElementsEditor extends JPanel implements ModelViewer {
     add.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        addEditor(new RecipeElement(recipe)).ingredient.requestFocusInWindow();
+        addEditor(new RecipeElement()).ingredient.requestFocusInWindow();
         dirtySupport.fireDirtyChanged(true);
       }
     });
@@ -211,7 +211,7 @@ public class RecipeElementsEditor extends JPanel implements ModelViewer {
       amount.setText(Fractions.toString(model.getAmount()));
       unit.setText(model.getUnit());
       note.setText(model.getNote());
-      isBase.setSelected(model.isBase());
+      isBase.setSelected(model.getIsBase());
     }
 
     @Override

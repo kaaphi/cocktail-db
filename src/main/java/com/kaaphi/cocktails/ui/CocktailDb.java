@@ -1,20 +1,42 @@
 package com.kaaphi.cocktails.ui;
 
+import static org.bson.codecs.configuration.CodecRegistries.fromCodecs;
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.name.Names;
 import com.kaaphi.cocktails.dao.CustomFormatRecipeDao;
 import com.kaaphi.cocktails.dao.RecipeDao;
 import com.kaaphi.cocktails.domain.AutoTag;
 import com.kaaphi.cocktails.domain.Recipe;
 import com.kaaphi.cocktails.domain.RecipeElement;
 import com.kaaphi.cocktails.ui.MenuUtil.MenuAction;
+import com.kaaphi.cocktails.web.MongoRecipeDaoModule;
+import com.kaaphi.cocktails.web.data.RecipeDataWatcher;
+import com.kaaphi.cocktails.web.data.mongo.MongoRecipeDao;
+import com.kaaphi.cocktails.web.data.mongo.MongoRecipeDataWatcher;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.CreateCollectionOptions;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.IntStream;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -28,6 +50,17 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.bson.BsonDateTime;
+import org.bson.BsonReader;
+import org.bson.BsonType;
+import org.bson.BsonWriter;
+import org.bson.Document;
+import org.bson.codecs.Codec;
+import org.bson.codecs.DecoderContext;
+import org.bson.codecs.EncoderContext;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.Conventions;
+import org.bson.codecs.pojo.PojoCodecProvider;
 
 public class CocktailDb extends JSplitPane {
   private SortedListModel<Recipe> cocktailListModel;
@@ -138,23 +171,43 @@ public class CocktailDb extends JSplitPane {
     }
   }
 
-  private void openFile(File file) {
-    try {
-      dao = new CustomFormatRecipeDao(file);
-      List<Recipe> recipes = dao.load();
 
-      cocktailListModel.clearObjects();
-      options.ingredients.clearOptions();
-      options.units.clearOptions();
-      for(Recipe r : recipes) {
-        cocktailListModel.addObject(r);
-        options.references.addOption(r.getReference());
-        options.tags.addOptions(r.getTags());
-        for(RecipeElement e : r.getRecipeElements()) {
-          options.ingredients.addOption(e.getIngredient());
-          options.units.addOption(e.getUnit());
-        }
+
+  private void openMongo(String connectionString) {
+    Injector injector = Guice.createInjector(
+        new MongoRecipeDaoModule(),
+        binder -> binder.bind(String.class)
+          .annotatedWith(Names.named("mongo.connectionString")).toInstance(connectionString)
+      );
+    dao = injector.getInstance(RecipeDao.class);
+    injector.getInstance(RecipeDataWatcher.class).addListener(() -> {
+
+    });
+
+    open();
+  }
+
+  private void openFile(File file) {
+      dao = new CustomFormatRecipeDao(file);
+      open();
+  }
+
+  private void open() {
+    try {
+    List<Recipe> recipes = dao.load();
+
+    cocktailListModel.clearObjects();
+    options.ingredients.clearOptions();
+    options.units.clearOptions();
+    for(Recipe r : recipes) {
+      cocktailListModel.addObject(r);
+      options.references.addOption(r.getReference());
+      options.tags.addOptions(r.getTags());
+      for(RecipeElement e : r.getRecipeElements()) {
+        options.ingredients.addOption(e.getIngredient());
+        options.units.addOption(e.getUnit());
       }
+    }
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -165,16 +218,25 @@ public class CocktailDb extends JSplitPane {
 
     final JFileChooser chooser = new JFileChooser(".");
 
-    menu.createMenu("&File", 
+    menu.createMenu("&File",
         new MenuAction("&Open", "O") {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if(chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
-          openFile(chooser.getSelectedFile());
-        }
-      }
-    },
-        new MenuAction("&Save", "S") {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+              openFile(chooser.getSelectedFile());
+            }
+          }
+        },
+        new MenuAction("Open Mongo") {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            String connectionString = JOptionPane.showInputDialog(frame, "Enter connection string:");
+            if(connectionString != null) {
+              openMongo(connectionString);
+            }
+          }
+        },
+    new MenuAction("&Save", "S") {
       @Override
       public void actionPerformed(ActionEvent e) {
         if(dao == null) {

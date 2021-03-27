@@ -130,7 +130,7 @@ public class RecipeEditor extends JPanel implements ModelViewer {
     recipe.setReferenceDetail(referenceDetail.getText());
     recipe.setInstructions(instructions.getText());
     recipe.setNote(note.getText());
-    recipe.setTagsFromString(tags.getText());
+    recipe.setTagString(tags.getText());
     recipe.setIndexElements(!dontIndexElements.isSelected());
     recipe.setArchived(isArchived.isSelected());
     elementsEditor.viewToModel();

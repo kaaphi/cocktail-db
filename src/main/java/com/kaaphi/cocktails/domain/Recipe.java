@@ -7,10 +7,13 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
+import org.bson.types.ObjectId;
 
 public class Recipe implements Serializable {
   private static final long serialVersionUID = 1L;
 
+  private ObjectId id;
   private String name;
   private String instructions;
   private String reference;
@@ -21,7 +24,9 @@ public class Recipe implements Serializable {
   private List<String> tags;
   private boolean archived;
 
+  public Recipe() {
 
+  }
 
   public Recipe(String name, String instructions, String reference,String referenceDetail, String note, List<String> tags, boolean indexElements, boolean archived) {
     this.name = name;
@@ -43,12 +48,20 @@ public class Recipe implements Serializable {
     List<RecipeElement> base = new LinkedList<RecipeElement>();
 
     for(RecipeElement e : elements) {
-      if(e.isBase()) {
+      if(e.getIsBase()) {
         base.add(e);
       }
     }
 
     return base;
+  }
+
+  public ObjectId getId() {
+    return id;
+  }
+
+  public void setId(ObjectId id) {
+    this.id = id;
   }
 
   public String getInstructions() {
@@ -87,6 +100,7 @@ public class Recipe implements Serializable {
     return tags;
   }
 
+  @BsonIgnore
   public String getTagString() {
     Iterator<String> it = tags.iterator();
 
@@ -104,7 +118,8 @@ public class Recipe implements Serializable {
     return sb.toString();
   }
 
-  public void setTagsFromString(String tagString) {
+  @BsonIgnore
+  public void setTagString(String tagString) {
     if(tagString.trim().isEmpty()) {
       tags = new ArrayList<String>();
     } else { 
@@ -166,27 +181,27 @@ public class Recipe implements Serializable {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(elements, indexElements, instructions, name, note, reference,
-        referenceDetail, tags);
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Recipe recipe = (Recipe) o;
+    return indexElements == recipe.indexElements && archived == recipe.archived && Objects
+        .equals(id, recipe.id) && Objects.equals(name, recipe.name) && Objects
+        .equals(instructions, recipe.instructions) && Objects
+        .equals(reference, recipe.reference) && Objects
+        .equals(referenceDetail, recipe.referenceDetail) && Objects
+        .equals(note, recipe.note) && Objects.equals(elements, recipe.elements)
+        && Objects.equals(tags, recipe.tags);
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof Recipe)) {
-      return false;
-    }
-    Recipe other = (Recipe) obj;
-    return Objects.equals(elements, other.elements) && indexElements == other.indexElements
-        && Objects.equals(instructions, other.instructions) && Objects.equals(name, other.name)
-        && Objects.equals(note, other.note) && Objects.equals(reference, other.reference)
-        && Objects.equals(referenceDetail, other.referenceDetail)
-        && Objects.equals(tags, other.tags);
+  public int hashCode() {
+    return Objects
+        .hash(id, name, instructions, reference, referenceDetail, note, indexElements, elements,
+            tags, archived);
   }
-
-
-
 }

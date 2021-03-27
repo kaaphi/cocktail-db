@@ -72,16 +72,6 @@ public class CocktailAppModule extends AbstractModule {
   }
 
   @Provides
-  RecipeDao provideRecipeDao(@Named("recipe.data.path") String dataPath) {
-    return new CustomFormatRecipeDao(Paths.get(dataPath).toFile());
-  }
-
-  @Provides
-  RecipeDataWatcher provideWatcher(@Named("recipe.data.path") String dataPath) throws IOException {
-    return new DefaultRecipeDataWatcher();
-  }
-
-  @Provides
   Javalin provideJavalin(VelocityEngine engine) {
     JavalinRenderer.register(JavalinVelocity.INSTANCE, ".html");
     JavalinVelocity.configure(engine);

@@ -11,22 +11,20 @@ public class RecipeElement implements Serializable {
 
   private String ingredient;
   private int[] amount;
-  private Recipe recipe;
   private String note;
   private String unit;
-  private boolean isBase;
+  private Boolean isBase;
 
-  public RecipeElement(String ingredient, int[] amount, String unit, String note, boolean isBase, Recipe recipe) {
+  public RecipeElement(String ingredient, int[] amount, String unit, String note, Boolean isBase) {
     this.ingredient = ingredient;
     this.amount = amount;
     this.note = note;
-    this.recipe = recipe;
     this.unit = unit;
     this.isBase = isBase;
   }
 
-  public RecipeElement(Recipe recipe) {
-    this("", new int[]{0,0}, "oz", "", false, recipe);
+  public RecipeElement() {
+    this("", new int[]{0,0}, "oz", "", false);
   }
 
   public String getIngredient() {
@@ -45,11 +43,11 @@ public class RecipeElement implements Serializable {
     this.amount = amount;
   }
 
-  public boolean isBase() {
+  public Boolean getIsBase() {
     return isBase;
   }
 
-  public void setIsBase(boolean isBase) {
+  public void setIsBase(Boolean isBase) {
     this.isBase = isBase;
   }
 
@@ -59,14 +57,6 @@ public class RecipeElement implements Serializable {
 
   public void setUnit(String unit) {
     this.unit = unit;
-  }
-
-  public Recipe getRecipe() {
-    return recipe;
-  }
-
-  public void setRecipe(Recipe recipe) {
-    this.recipe = recipe;
   }
 
   public String getNote() {
@@ -87,7 +77,7 @@ public class RecipeElement implements Serializable {
     final int prime = 31;
     int result = 1;
     result = prime * result + Arrays.hashCode(amount);
-    result = prime * result + Objects.hash(ingredient, isBase, note, recipe, unit);
+    result = prime * result + Objects.hash(ingredient, isBase, note, unit);
     return result;
   }
 
@@ -102,7 +92,7 @@ public class RecipeElement implements Serializable {
     RecipeElement other = (RecipeElement) obj;
     return Arrays.equals(amount, other.amount) && Objects.equals(ingredient, other.ingredient)
         && isBase == other.isBase && Objects.equals(note, other.note)
-        && Objects.equals(recipe, other.recipe) && Objects.equals(unit, other.unit);
+        && Objects.equals(unit, other.unit);
   }
 
 
