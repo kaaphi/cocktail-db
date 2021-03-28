@@ -37,8 +37,12 @@ import org.bson.codecs.EncoderContext;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MongoRecipeDaoModule extends AbstractModule {
+  private static final Logger log = LoggerFactory.getLogger(MongoRecipeDaoModule.class);
+
   @Qualifier
   @Retention(RUNTIME)
   public @interface MongoUpdateLog {}
@@ -99,6 +103,7 @@ public class MongoRecipeDaoModule extends AbstractModule {
         .codecRegistry(pojoCodecRegistry);
 
     if(connectionString != null && !connectionString.isEmpty()) {
+      log.info("Using connection string {}", connectionString);
       settings.applyConnectionString(new ConnectionString(connectionString));
     }
 
