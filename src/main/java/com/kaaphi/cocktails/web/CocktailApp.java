@@ -1,10 +1,12 @@
 package com.kaaphi.cocktails.web;
 
 import static io.javalin.apibuilder.ApiBuilder.get;
+
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.name.Named;
+import com.google.inject.util.Modules;
 import io.javalin.Javalin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,11 +39,12 @@ public class CocktailApp {
   }
 
   public static void main(String[] args) {
-    Injector injector = Guice.createInjector(
+    Injector injector = Guice.createInjector(Modules.override(
         new CocktailAppModule(),
         new MongoRecipeDaoModule(),
         new VelocityModule()
-        );
+        ).with(new DockerSecretModule())
+    );
     
     CocktailApp app = injector.getInstance(CocktailApp.class);
     
