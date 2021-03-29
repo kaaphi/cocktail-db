@@ -25,6 +25,8 @@ import java.lang.annotation.Retention;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import javax.inject.Qualifier;
 import org.bson.BsonReader;
@@ -103,11 +105,22 @@ public class MongoRecipeDaoModule extends AbstractModule {
         .codecRegistry(pojoCodecRegistry);
 
     if(connectionString != null && !connectionString.isEmpty()) {
-      log.info("Using connection string {}", connectionString);
+      log.info("Using connection string {}", redactConnectionString(connectionString));
       settings.applyConnectionString(new ConnectionString(connectionString));
     }
 
     return MongoClients.create(settings.build());
+  }
+
+  private static final Pattern REDACT_PATTERN = Pattern.compile("mongodb://(.*?):(.*?)@");
+  private static String redactConnectionString(String connectionString) {
+    Matcher m = REDACT_PATTERN.matcher(connectionString);
+    StringBuilder sb = new StringBuilder();
+    if(m.find()) {
+      m.appendReplacement(sb, "mongodb://$1:*****@");
+    }
+    m.appendTail(sb);
+    return sb.toString();
   }
 
   private static class IntArrayCodec implements Codec<int[]> {
