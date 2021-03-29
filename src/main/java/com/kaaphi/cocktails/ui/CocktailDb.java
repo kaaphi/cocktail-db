@@ -1,9 +1,5 @@
 package com.kaaphi.cocktails.ui;
 
-import static org.bson.codecs.configuration.CodecRegistries.fromCodecs;
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.name.Names;
@@ -15,52 +11,35 @@ import com.kaaphi.cocktails.domain.RecipeElement;
 import com.kaaphi.cocktails.ui.MenuUtil.MenuAction;
 import com.kaaphi.cocktails.web.MongoRecipeDaoModule;
 import com.kaaphi.cocktails.web.data.RecipeDataWatcher;
-import com.kaaphi.cocktails.web.data.mongo.MongoRecipeDao;
-import com.kaaphi.cocktails.web.data.mongo.MongoRecipeDataWatcher;
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.CreateCollectionOptions;
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.time.Instant;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.IntStream;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import org.bson.BsonDateTime;
-import org.bson.BsonReader;
-import org.bson.BsonType;
-import org.bson.BsonWriter;
-import org.bson.Document;
-import org.bson.codecs.Codec;
-import org.bson.codecs.DecoderContext;
-import org.bson.codecs.EncoderContext;
-import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.codecs.pojo.Conventions;
-import org.bson.codecs.pojo.PojoCodecProvider;
 
 public class CocktailDb extends JSplitPane {
   private SortedListModel<Recipe> cocktailListModel;
@@ -230,8 +209,32 @@ public class CocktailDb extends JSplitPane {
         new MenuAction("Open Mongo") {
           @Override
           public void actionPerformed(ActionEvent e) {
-            String connectionString = JOptionPane.showInputDialog(frame, "Enter connection string:");
-            if(connectionString != null) {
+            JPanel panel = new JPanel(new BorderLayout(5, 5));
+
+            JPanel label = new JPanel(new GridLayout(0, 1, 2, 2));
+            label.add(new JLabel("Host", SwingConstants.RIGHT));
+            label.add(new JLabel("User", SwingConstants.RIGHT));
+            label.add(new JLabel("Password", SwingConstants.RIGHT));
+            panel.add(label, BorderLayout.WEST);
+
+            JPanel controls = new JPanel(new GridLayout(0, 1, 2, 2));
+            JTextField host = new JTextField();
+            controls.add(host);
+            JTextField username = new JTextField();
+            controls.add(username);
+            JPasswordField password = new JPasswordField();
+            controls.add(password);
+            panel.add(controls, BorderLayout.CENTER);
+
+            int value = JOptionPane.showConfirmDialog(frame, panel, "Mongo Creds", JOptionPane.OK_CANCEL_OPTION);
+            if(value == JOptionPane.OK_OPTION) {
+              String connectionString = "";
+              if(!host.getText().isEmpty() && !username.getText().isEmpty()) {
+                String encodedPassword = URLEncoder.encode(new String(password.getPassword()),
+                    Charset.forName("UTF-8"));
+                connectionString = String.format("mongodb://%s:%s@%s/?authSource=admin", username.getText(), encodedPassword, host.getText());
+              }
+
               openMongo(connectionString);
             }
           }
