@@ -1,0 +1,46 @@
+service: cocktail-db
+# app and org for use with dashboard.serverless.com
+#app: your-app-name
+#org: your-org-name
+
+plugins:
+  - serverless-python-requirements
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.9
+
+functions:
+  ui:
+    handler: handlers.ui_handler
+    events:
+      - httpApi:
+          path: /
+          method: GET
+      - httpApi:
+          path: /alphabetical
+          method: GET
+      - httpApi:
+          path: /baseIngredients
+          method: GET
+      - httpApi:
+          path: /allIngredients
+          method: GET
+      - httpApi:
+          path: /search
+          method: GET
+# you can add CloudFormation resource templates here
+#resources:
+#  Resources:
+#    NewResource:
+#      Type: AWS::S3::Bucket
+#      Properties:
+#        BucketName: my-new-bucket
+#  Outputs:
+#     NewOutput:
+#       Description: "Description for the output"
+#       Value: "Some output value"

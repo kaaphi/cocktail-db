@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+<h1>{{ title }}</h1>
+<ul class="list-group">
+  {% for recipe in recipes %}
+  <li class="list-group-item"><a href="/r/{{ recipe.uri_title }}">{{ recipe.name }}</a></li>
+  {% endfor %}
+</ul>
+</div>
+{% endblock %}
